@@ -1,0 +1,422 @@
+/* Variables globales: colores, radios y tipografías */
+:root {
+  --color-bg: #0f172a;          /* fondo principal */
+  --color-panel: #1e293b;       /* fondo de panel/tarjeta */
+  --color-text: #e2e8f0;        /* color de texto principal */
+  --color-accent: #00f0e6;      /* color de acento */
+  --color-accent-dark: #0aa8a0; /* acento oscuro */
+  --color-btn: #00f0e6;         /* color de botón principal */
+  --color-btn-hover: #0ae5d8;   /* color hover de botón */
+  --color-highlight: #22d3ee;   /* color para resaltar */
+  --radius: 14px;               /* radio de bordes */
+  --transition: 0.3s ease;      /* duración de transiciones */
+  --max-width: 1200px;          /* ancho máximo del contenedor */
+  --font-title: 'Montserrat', sans-serif; /* tipografía títulos */
+  --font-body: 'Inter', sans-serif;       /* tipografía cuerpo */
+}
+
+/* Estilos globales (reset y cuerpo) */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* Barra de navegación */
+.nav {
+  background-color: var(--color-panel);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav .container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-title);
+  font-weight: 700;
+  color: var(--color-accent);
+  font-size: 1.2rem;
+}
+
+.logo img {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+}
+
+.nav-links a {
+  color: var(--color-text);
+  text-decoration: none;
+  transition: var(--transition);
+  font-weight: 500;
+}
+
+.nav-links a:hover {
+  color: var(--color-accent);
+}
+
+/* Icono y animación del menú hamburguesa */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 32px;
+  height: 28px;
+  cursor: pointer;
+  gap: 5px;
+  z-index: 110;
+}
+
+.hamburger span {
+  display: block;
+  width: 100%;
+  height: 3px;
+  background: var(--color-accent);
+  border-radius: 3px;
+  transition: all 0.3s ease;
+}
+
+.hamburger.active span:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+}
+
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.active span:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
+}
+
+/* Menú móvil / comportamiento responsive */
+@media (max-width: 768px) {
+  .hamburger {
+    display: flex;
+  }
+
+  .nav-links {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 75%;
+    height: 100vh;
+    background-color: var(--color-panel);
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    transition: right 0.3s ease;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.3);
+  }
+
+  .nav-links.active {
+    right: 0;
+  }
+
+  .no-scroll {
+    overflow: hidden;
+  }
+}
+
+/* Formulario principal de solicitud de crédito */
+.form-container {
+  background-color: var(--color-panel);
+  width: 90%;
+  max-width: 700px;
+  margin: 3rem auto;
+  padding: 2.5rem;
+  border-radius: var(--radius);
+  box-shadow: 0 0 25px rgba(0, 240, 230, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.form-title {
+  text-align: center;
+  font-family: var(--font-title);
+  font-size: 2rem;
+  color: var(--color-accent);
+  margin-bottom: 2rem;
+  text-shadow: 0 0 8px rgba(0, 240, 230, 0.4);
+}
+
+/* Secciones internas del formulario */
+.form-section {
+  margin-bottom: 2rem;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(0, 240, 230, 0.1);
+  border-radius: var(--radius);
+  padding: 1.5rem 1.8rem;
+  box-shadow: inset 0 0 10px rgba(0, 240, 230, 0.05);
+  transition: 0.3s ease;
+}
+
+.form-section:hover {
+  border-color: rgba(0, 240, 230, 0.3);
+  box-shadow: 0 0 15px rgba(0, 240, 230, 0.08);
+}
+
+.form-section h2 {
+  font-size: 1.2rem;
+  color: var(--color-highlight);
+  margin-bottom: 1rem;
+  border-left: 3px solid var(--color-accent);
+  padding-left: 10px;
+}
+
+/* Estilos de campos: input, select, textarea */
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 1.2rem;
+  border-radius: var(--radius);
+  background-color: #0f172a;
+  color: var(--color-text);
+  font-size: 1rem;
+  border: 1px solid rgba(0, 240, 230, 0.15);
+  transition: var(--transition);
+  box-shadow: inset 0 0 8px rgba(0, 240, 230, 0.05);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 12px rgba(0, 240, 230, 0.4), inset 0 0 8px rgba(0, 240, 230, 0.15);
+  background-color: #16203a;
+}
+
+textarea {
+  resize: none;
+  height: 100px;
+}
+
+/* Botones: enviar y limpiar */
+.form-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.btn-enviar,
+.btn-limpiar {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: var(--transition);
+}
+
+.btn-enviar {
+  background-color: var(--color-btn);
+  color: #0f172a;
+  box-shadow: 0 0 15px rgba(0, 240, 230, 0.3);
+}
+
+.btn-enviar:hover {
+  background-color: var(--color-btn-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 0 25px rgba(0, 240, 230, 0.6);
+}
+
+.btn-limpiar {
+  background-color: transparent;
+  color: var(--color-text);
+  border: 1px solid var(--color-accent);
+}
+
+.btn-limpiar:hover {
+  background-color: rgba(0, 240, 230, 0.1);
+  color: var(--color-accent);
+  transform: translateY(-2px);
+}
+
+/* Ajustes responsive para formulario */
+@media (max-width: 600px) {
+  .form-container {
+    padding: 1.5rem;
+  }
+
+  .form-section {
+    padding: 1.2rem;
+  }
+
+  .form-title {
+    font-size: 1.6rem;
+  }
+
+  .btn-enviar,
+  .btn-limpiar {
+    font-size: 0.9rem;
+  }
+}
+
+/* Overlay oscuro con blur */
+.resumen-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(6px);
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  animation: fadeIn 0.25s ease;
+}
+
+/* Contenedor del modal */
+.resumen-modal {
+  background: rgba(30, 41, 59, 0.95); /* var(--color-panel) pero con transparencia */
+  border: 1px solid rgba(0, 240, 230, 0.25);
+  border-radius: var(--radius);
+  width: 90%;
+  max-width: 520px;
+  padding: 2rem;
+  box-shadow: 0 0 25px rgba(0, 240, 230, 0.3);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  animation: slideUp 0.35s ease;
+}
+
+/* Título del modal */
+.resumen-modal h2 {
+  font-family: var(--font-title);
+  color: var(--color-accent);
+  font-size: 1.6rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  text-shadow: 0 0 10px rgba(0, 240, 230, 0.4);
+}
+
+/* Lista de datos */
+.resumen-item {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(0, 240, 230, 0.1);
+  padding: 0.9rem 1.2rem;
+  border-radius: var(--radius);
+  margin-bottom: 0.8rem;
+  font-size: 0.95rem;
+  box-shadow: inset 0 0 8px rgba(0, 240, 230, 0.05);
+}
+
+.resumen-item span {
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+/* Botones del modal */
+.resumen-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.btn-confirmar,
+.btn-cancelar {
+  flex: 1;
+  padding: 12px;
+  border-radius: var(--radius);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 1rem;
+  border: none;
+}
+
+/* Confirmar */
+.btn-confirmar {
+  background-color: var(--color-btn);
+  color: #0f172a;
+  box-shadow: 0 0 15px rgba(0, 240, 230, 0.4);
+}
+
+.btn-confirmar:hover {
+  background-color: var(--color-btn-hover);
+  box-shadow: 0 0 25px rgba(0, 240, 230, 0.7);
+  transform: translateY(-2px);
+}
+
+/* Cancelar */
+.btn-cancelar {
+  background: transparent;
+  color: var(--color-text);
+  border: 1px solid var(--color-accent);
+}
+
+.btn-cancelar:hover {
+  background: rgba(0, 240, 230, 0.1);
+  transform: translateY(-2px);
+  color: var(--color-accent);
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0;
+    transform: translateY(30px); 
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0); 
+  }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .resumen-modal {
+    padding: 1.5rem;
+  }
+  
+  .resumen-modal h2 {
+    font-size: 1.4rem;
+  }
+}
+

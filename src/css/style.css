@@ -1,0 +1,341 @@
+/*Variables Globales */
+:root {
+  --color-bg: #0f172a;          /* Fondo oscuro azulado */
+  --color-panel: #1e293b;       /* Panel o tarjeta */
+  --color-text: #e2e8f0;        /* Texto principal */
+  --color-accent: #00f0e6;      /* Cian neón (acento) */
+  --color-accent-dark: #0aa8a0; /* Cian más oscuro */
+  --color-btn: #00f0e6;         /* Botón principal */
+  --color-btn-hover: #0ae5d8;   /* Hover del botón */
+  --color-highlight: #22d3ee;   /* Detalles resaltados */
+  --radius: 16px;               /* Radio general */
+  --transition: 0.3s ease;      /* Transiciones suaves */
+  --max-width: 1200px;          /* Ancho máximo del contenido */
+  --font-title: 'Montserrat', sans-serif;
+  --font-body: 'Inter', sans-serif;
+}
+
+
+  /* Estilos Globales */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* navegacion */
+.nav {
+  background-color: var(--color-panel);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav .container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-title);
+  font-weight: 700;
+  color: var(--color-accent);
+  font-size: 1.2rem;
+}
+
+.logo img {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+}
+
+.nav-links a {
+  color: var(--color-text);
+  text-decoration: none;
+  transition: var(--transition);
+  font-weight: 500;
+}
+
+.nav-links a:hover {
+  color: var(--color-accent);
+}
+
+ /* MENÚ HAMBURGUESA RESPONSIVE */
+
+ /* Estilos base del botón */
+.hamburger {
+  display: none; /* Oculto en escritorio */
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 32px;
+  height: 28px;
+  cursor: pointer;
+  gap: 5px;
+  transition: transform 0.3s ease;
+  z-index: 110;
+}
+
+.hamburger span {
+  display: block;
+  width: 100%;
+  height: 3px;
+  background: var(--color-accent);
+  border-radius: 3px;
+  transition: all 0.3s ease;
+}
+
+/* ✨ Animación al abrir (icono X) */
+.hamburger.active span:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+}
+
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.active span:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
+}
+
+ /* ESTILOS DEL MENÚ EN MÓVIL */
+
+
+@media (max-width: 768px) {
+  .hamburger {
+    display: flex;
+  }
+
+  .nav-links {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 75%;
+    height: 100vh;
+    background-color: var(--color-panel);
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    transition: right 0.3s ease;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.3);
+  }
+
+  .nav-links.active {
+    right: 0;
+  }
+
+  .nav-links li {
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--color-text);
+    font-size: 1.2rem;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .nav-links a:hover {
+    color: var(--color-accent);
+  }
+
+  /* Evita que se desplace la página cuando el menú está abierto */
+  .no-scroll {
+    overflow: hidden;
+  }
+}
+
+
+/* hero banner */
+.hero {
+  background: linear-gradient(135deg, var(--color-panel), var(--color-bg));
+  text-align: center;
+  padding: 6rem 1rem;
+}
+
+.hero h1 {
+  font-family: var(--font-title);
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.hero p {
+  font-size: 1.1rem;
+  color: #cbd5e1;
+  margin-bottom: 2rem;
+}
+
+.hero .btn {
+  background-color: var(--color-btn);
+  color: #0f172a;
+  padding: 0.9rem 2rem;
+  border-radius: var(--radius);
+  font-weight: 600;
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.hero .btn:hover {
+  background-color: var(--color-btn-hover);
+  transform: scale(1.05);
+  filter: drop-shadow(#0aa8a0 0px 2px 8px);
+}
+
+/* seccion creditos  */
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.credits-section h3 {
+  font-family: var(--font-title);
+  font-size: 1.8rem;
+  text-align: center;
+  color: var(--color-accent);
+  margin-bottom: 2rem;
+}
+
+/* tarjetas  */
+.credit-card {
+  background-color: var(--color-panel);
+  border-radius: var(--radius);
+  padding: 1.8rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  transition: var(--transition);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.credit-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--color-accent-dark);
+}
+
+/* Encabezado */
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.card-header .icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  top: -15px;
+}
+
+.card-header .icon i {
+  color: var(--color-accent);
+  font-size: 1.5rem;
+  line-height: 30px;
+  text-align: center;
+  display: block;
+}
+
+.card-header h3 {
+  font-family: var(--font-title);
+  font-size: 1.3rem;
+  color: var(--color-accent);
+}
+
+/* Descripción */
+.credit-card p {
+  font-size: 0.95rem;
+  color: #cbd5e1;
+  margin-bottom: 1.2rem;
+}
+
+/* Detalles */
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 0.4rem;
+}
+
+.label {
+  font-weight: 500;
+  color: #94a3b8;
+}
+
+.value {
+  font-weight: 600;
+}
+
+.highlight {
+  color: var(--color-highlight);
+}
+
+/* Botón */
+.btn-primary {
+  background-color: var(--color-btn);
+  color: #0f172a;
+  border: none;
+  padding: 0.8rem 1.6rem;
+  border-radius: var(--radius);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  width: 100%;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-btn-hover);
+  transform: scale(1.03);
+  filter: drop-shadow(#0aa8a0 0px 2px 8px);
+}
+
+/* responsive  */
+@media (min-width: 768px) {
+  .credits-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .nav-links {
+    display: none; /* Podrías reemplazar por un menú hamburguesa */
+  }
+
+  .hero h1 {
+    font-size: 2rem;
+  }
+}

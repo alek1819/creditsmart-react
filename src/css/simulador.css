@@ -1,0 +1,395 @@
+/* VARIABLES GLOBALES */
+:root {
+    --color-bg: #0f172a;
+    --color-panel: #1e293b;
+    --color-text: #e2e8f0;
+    --color-accent: #00f0e6;
+    --color-accent-dark: #0aa8a0;
+    --color-btn: #00f0e6;
+    --color-btn-hover: #0ae5d8;
+    --color-highlight: #22d3ee;
+    --radius: 16px;
+    --transition: 0.3s ease;
+    --max-width: 1200px;
+    --font-title: 'Montserrat', sans-serif;
+    --font-body: 'Inter', sans-serif;
+}
+    /* ESTILOS GLOBALES */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-body);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+/* NAVEGACIÓN */
+.nav {
+    background-color: var(--color-panel);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav .container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--font-title);
+    font-weight: 700;
+    color: var(--color-accent);
+    font-size: 1.3rem;
+}
+
+.logo img {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+}
+
+.nav-links a {
+    color: var(--color-text);
+    text-decoration: none;
+    transition: var(--transition);
+    font-weight: 500;
+}
+
+.nav-links a:hover {
+    color: var(--color-accent);
+}
+
+   /* HAMBURGUESA */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 26px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.hamburger span {
+    display: block;
+    height: 3px;
+    background: var(--color-accent);
+    border-radius: 10px;
+    transition: var(--transition);
+}
+
+   /* RESPONSIVE (MÓVIL) */
+@media (max-width: 768px) {
+    .hamburger {
+    display: flex;
+}
+
+    .nav-links {
+    position: absolute;
+    top: 70px;
+    right: 0;
+    background: var(--color-panel);
+    flex-direction: column;
+    width: 100%;
+    text-align: center;
+    gap: 1.5rem;
+    padding: 2rem 0;
+    transform: translateY(-200%);
+    opacity: 0;
+    pointer-events: none;
+    transition: all var(--transition);
+}
+
+    .nav-links.active {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: all;
+}
+
+  /* Animación del ícono hamburguesa */
+    .hamburger.active span:nth-child(1) {
+    transform: rotate(45deg) translateY(8px);
+}
+    .hamburger.active span:nth-child(2) {
+    opacity: 0;
+}
+    .hamburger.active span:nth-child(3) {
+    transform: rotate(-45deg) translateY(-8px);
+}
+}
+
+/* SIMULADOR DE CRÉDITO */
+.contenedor {
+    max-width: var(--max-width);
+    margin: 3rem auto;
+    padding: 2.5rem;
+    background-color: var(--color-panel);
+    border-radius: var(--radius);
+    box-shadow: 0 0 25px rgba(0, 240, 230, 0.08);
+}
+
+/* Encabezado */
+.header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.header h1 {
+    font-family: var(--font-title);
+    font-size: 2.2rem;
+    color: var(--color-accent);
+    letter-spacing: 1px;
+    text-shadow: 0 0 10px rgba(0, 240, 230, 0.3);
+}
+
+/* BÚSQUEDA Y FILTROS */
+.busqueda {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.busqueda h2 {
+    font-family: var(--font-title);
+    color: var(--color-highlight);
+    margin-bottom: 1.2rem;
+}
+
+.filtros {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: baseline; /* ← ESTO lo nivela */
+    gap: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+
+.input-busqueda,
+.select-rango {
+    padding: 0.9rem 1rem;
+    border: 2px solid var(--color-accent-dark);
+    border-radius: var(--radius);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-size: 1rem;
+    width: min(260px, 90%);
+    transition: var(--transition);
+}
+
+.input-busqueda:focus,
+.select-rango:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 10px rgba(0, 240, 230, 0.3);
+}
+
+/* Botón de filtrar */
+.btn-filtrar {
+    background-color: var(--color-btn);
+    color: var(--color-bg);
+    border: none;
+    padding: 0.9rem 1.8rem;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-weight: 600;
+    transition: var(--transition);
+    margin-top: 0.5rem;
+
+}
+
+.btn-filtrar:hover {
+    background-color: var(--color-btn-hover);
+    box-shadow: 0 0 12px rgba(0, 240, 230, 0.4);
+    transform: translateY(-2px);
+}
+
+/* RESULTADOS / CARDS */
+.resultados {
+    margin-top: 3rem;
+}
+
+.resultados h2 {
+    text-align: center;
+    color: var(--color-highlight);
+    font-family: var(--font-title);
+    margin-bottom: 2.2rem;
+}
+
+.container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.credits-section h3 {
+    font-family: var(--font-title);
+    font-size: 1.8rem;
+    text-align: center;
+    color: var(--color-accent);
+    margin-bottom: 2rem;
+}
+
+/* Tarjetas */
+.credit-card {
+    background-color: var(--color-panel);
+    border-radius: var(--radius);
+    padding: 1.8rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+    transition: var(--transition);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.credit-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--color-accent-dark);
+}
+
+/* Encabezado */
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+}
+
+.card-header .icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: inline-block;
+    position: relative;
+    top: -15px;
+}
+
+.card-header .icon i {
+    color: var(--color-accent);
+    font-size: 1.5rem;
+    line-height: 30px;
+    text-align: center;
+    display: block;
+}
+
+.card-header h3 {
+    font-family: var(--font-title);
+    font-size: 1.3rem;
+    color: var(--color-accent);
+}
+
+/* Descripción */
+.credit-card p {
+    font-size: 0.95rem;
+    color: #cbd5e1;
+    margin-bottom: 1.2rem;
+}
+
+/* Detalles */
+.details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-bottom: 1.5rem;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 0.4rem;
+}
+
+.label {
+    font-weight: 500;
+    color: #94a3b8;
+}
+
+.value {
+    font-weight: 600;
+}
+
+.highlight {
+    color: var(--color-highlight);
+}
+
+/* Botón */
+.btn-primary {
+    background-color: var(--color-btn);
+    color: #0f172a;
+    border: none;
+    padding: 0.8rem 1.6rem;
+    border-radius: var(--radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    width: 100%;
+}
+
+.btn-primary:hover {
+    background-color: var(--color-btn-hover);
+    transform: scale(1.03);
+    filter: drop-shadow(#0aa8a0 0px 2px 8px);
+}
+
+.footer {
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 0.9rem;
+    margin-top: 3rem;
+}
+
+
+     /* Responsivo */
+@media (min-width: 768px) {
+    .credits-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .nav-links {
+        display: none; /* Podrías reemplazar por un menú hamburguesa */
+    }
+
+    .hero h1 {
+        font-size: 2rem;
+    }
+}
+
+    /* RESPONSIVE DESIGN */
+@media (max-width: 768px) {
+    .contenedor {
+        padding: 1.5rem;
+    }
+
+    .filtros {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .cards {
+        grid-template-columns: 1fr;
+        gap: 6rem;
+    }
+}
