@@ -1,15 +1,37 @@
 import "../css/simulador.css";
-import creditsData from "../data/creditsData";
 import Card from "../components/Card";
-import { useState } from "react";
 import Footer from "../components/Footer";
+import { useState, useEffect } from "react";
+
+// Firebase
+import { db } from "../firebase/firebaseConfiguracion";
+import { collection, getDocs } from "firebase/firestore";
 
 export default function Simulador() {
     const [busqueda, setBusqueda] = useState("");
     const [rango, setRango] = useState("");
+    const [credits, setCredits] = useState([]);
 
-    // ---- Normalizar montos para poder filtrarlos bien ----
-    const normalizarCreditos = creditsData.map((credit) => {
+    
+    // Cargar créditos desde Firebase
+    
+    const fetchCredits = async () => {
+        const snapshot = await getDocs(collection(db, "creditos"));
+        const data = snapshot.docs.map((d) => ({
+            id: d.id,
+            ...d.data(),
+        }));
+        setCredits(data);
+    };
+
+    useEffect(() => {
+        fetchCredits();
+    }, []);
+
+    
+    // Normalizar montos
+    
+    const normalizar = credits.map((credit) => {
         const [minStr, maxStr] = credit.monto.split("-");
 
         const min = parseInt(minStr.replace(/\D/g, "")) * 1000000;
@@ -22,25 +44,29 @@ export default function Simulador() {
         };
     });
 
-    // ---- Filtro de búsqueda + rango ----
+    
+    // Filtro de búsqueda + rango
+    
     const filtrarCreditos = () => {
-        return normalizarCreditos
+        return normalizar
             .filter((credit) => {
+                // Texto
                 const matchText = credit.titulo
                     .toLowerCase()
                     .includes(busqueda.toLowerCase());
 
                 if (!rango) return matchText;
 
-                // Filtro por rango
-                const [min, max] = rango.split("-");
-                const minR = parseInt(min); // Ya viene en pesos
-                const maxR = max ? parseInt(max) : null;
-
-                if (maxR === null) {
-                    // Caso: 50000000+ (más de 50M)
-                    return matchText && credit.montoMax >= minR;
+                // Caso: 50M+
+                if (rango.endsWith("+")) {
+                    const min = parseInt(rango.replace("+", ""));
+                    return matchText && credit.montoMax >= min;
                 }
+
+                // Rango normal
+                const [min, max] = rango.split("-");
+                const minR = parseInt(min);
+                const maxR = parseInt(max);
 
                 return (
                     matchText &&
@@ -60,7 +86,7 @@ export default function Simulador() {
             </header>
 
             <main className="contenedor">
-                {/* --- BÚSQUEDA Y FILTROS --- */}
+                {/* === BÚSQUEDA Y FILTROS === */}
                 <section className="busqueda">
                     <h2>Buscar Crédito</h2>
 
@@ -90,15 +116,15 @@ export default function Simulador() {
                     </div>
                 </section>
 
-                {/* --- TARJETAS --- */}
+                {/* === TARJETAS === */}
                 <section className="credits-section">
                     {resultados.length === 0 && (
                         <p className="no-result">No se encontraron resultados</p>
                     )}
 
-                    {resultados.map((credit, index) => (
+                    {resultados.map((credit) => (
                         <Card
-                            key={index}
+                            key={credit.id}
                             icon={credit.icon}
                             titulo={credit.titulo}
                             descripcion={credit.descripcion}
