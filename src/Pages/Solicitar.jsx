@@ -1,8 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "../css/solicitar.css";
-import creditsData from "../data/creditsData";
+
+// Firebase
+import { db } from "../firebase/firebaseConfig";
+import { collection, getDocs, addDoc } from "firebase/firestore";
+
+// Toast
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Solicitar() {
+    const [credits, setCredits] = useState([]);
+
     const [form, setForm] = useState({
         nombre: "",
         cedula: "",
@@ -19,13 +28,26 @@ export default function Solicitar() {
 
     const [errors, setErrors] = useState({});
     const [cuota, setCuota] = useState(null);
-    const [solicitudes, setSolicitudes] = useState([]);
-
-    const [mostrarResumen, setMostrarResumen] = useState(false); // <-- Nuevo modal
+    const [mostrarResumen, setMostrarResumen] = useState(false);
     const [resumen, setResumen] = useState(null);
     const [success, setSuccess] = useState(false);
 
-   {/* Actualizar formulario */}
+    
+    // Cargar créditos desde Firebase
+    
+    useEffect(() => {
+        const fetchCredits = async () => {
+            const snapshot = await getDocs(collection(db, "creditos"));
+            const data = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
+            setCredits(data);
+        };
+
+        fetchCredits();
+    }, []);
+
+    
+    // Actualizar formulario
+    
     const handleChange = (e) => {
         const { id, value } = e.target;
         setForm({ ...form, [id]: value });
@@ -40,65 +62,44 @@ export default function Solicitar() {
         }
     };
 
-    {/* Validar campo individual */}
+
+    // Validar campos
+    
     const validarCampo = (campo, valor) => {
         let msg = "";
 
         if (!valor) msg = "Este campo es obligatorio";
+        if (campo === "email" && valor && !/\S+@\S+\.\S+/.test(valor)) msg = "Correo inválido";
+        if (campo === "telefono" && valor.length < 10) msg = "Debe tener mínimo 10 dígitos";
 
-        if (campo === "email" && valor && !/\S+@\S+\.\S+/.test(valor)) {
-            msg = "Correo inválido";
-        }
+        const creditoSel = credits.find((c) => c.titulo.toLowerCase().includes(form.tipo));
 
-        if (campo === "telefono" && valor && valor.length < 10) {
-            msg = "Debe tener mínimo 10 dígitos";
-        }
-
-        // Validación monto según tipo
-        if (campo === "monto" && form.tipo) {
-            const creditoSel = creditsData.find(
-                (c) => c.titulo.toLowerCase().includes(form.tipo)
-            );
-
-            if (creditoSel) {
-                const [minStr, maxStr] = creditoSel.monto
-                    .replace(/\$|M| |-/g, "")
-                    .split(" ");
-
-                const min = parseInt(minStr) * 1000000;
-                const max = parseInt(maxStr) * 1000000;
-
-                if (valor < min || valor > max) {
-                    msg = `Monto permitido: ${creditoSel.monto}`;
-                }
+        // Validar monto
+        if (campo === "monto" && creditoSel) {
+            const [min, max] = creditoSel.monto.match(/\d+/g).map(Number);
+            if (valor < min * 1_000_000 || valor > max * 1_000_000) {
+                msg = `Monto permitido: ${creditoSel.monto}`;
             }
         }
 
-        // Validación plazo según tipo
-        if (campo === "plazo" && form.tipo) {
-            const creditoSel = creditsData.find(
-                (c) => c.titulo.toLowerCase().includes(form.tipo)
-            );
-
-            if (creditoSel) {
-                const maxPlazo = parseInt(
-                    creditoSel.plazo.replace(/\D/g, "")
-                );
-
-                if (valor > maxPlazo) {
-                    msg = `Plazo máximo: ${maxPlazo} meses`;
-                }
+        // Validar plazo
+        if (campo === "plazo" && creditoSel) {
+            const maxPlazo = creditoSel.plazo.match(/\d+/)[0];
+            if (valor > parseInt(maxPlazo)) {
+                msg = `Plazo máximo: ${maxPlazo} meses`;
             }
         }
 
         setErrors((prev) => ({ ...prev, [campo]: msg }));
     };
 
-    {/* Cálculo de cuota */}
+    
+    // Cálculo de cuota estimada
+    
     const calcularCuota = (monto, plazo) => {
         if (!monto || !plazo) return setCuota(null);
 
-        const tasaMensual = 0.015; // ejemplo
+        const tasaMensual = 0.015;
         const n = parseInt(plazo);
         const M = parseFloat(monto);
 
@@ -106,11 +107,13 @@ export default function Solicitar() {
         setCuota(Math.round(c));
     };
 
-    // Enviar formulario (antes del modal)
+    
+    // Mostrar resumen antes de enviar
+    
     const handleSubmit = (e) => {
         e.preventDefault();
-        let hayErrores = false;
 
+        let hayErrores = false;
         Object.keys(form).forEach((campo) => {
             validarCampo(campo, form[campo]);
             if (!form[campo]) hayErrores = true;
@@ -119,33 +122,48 @@ export default function Solicitar() {
         if (hayErrores) return;
 
         setResumen({ ...form, cuota });
-        setMostrarResumen(true); 
+        setMostrarResumen(true);
         setSuccess(false);
     };
 
-    // Confirmar envío final
-    const confirmarEnvio = () => {
-        setSolicitudes([...solicitudes, resumen]);
-        setSuccess(true);
+    
+    // Confirmar y guardar en Firebase
+    const confirmarEnvio = async () => {
+        try {
+            await addDoc(collection(db, "solicitudes"), resumen);
 
-        // limpiar
-        setForm({
-            nombre: "",
-            cedula: "",
-            email: "",
-            telefono: "",
-            tipo: "",
-            monto: "",
-            plazo: "",
-            destino: "",
-            empresa: "",
-            cargo: "",
-            ingresos: "",
-        });
+            setSuccess(true);
+            setMostrarResumen(false);
 
-        setCuota(null);
-        setResumen(null);
-        setMostrarResumen(false);
+            //TOAST DE ÉXITO
+            toast.success("Solicitud enviada con éxito", {
+                position: "top-right",
+                autoClose: 3000,
+            });
+
+            setForm({
+                nombre: "",
+                cedula: "",
+                email: "",
+                telefono: "",
+                tipo: "",
+                monto: "",
+                plazo: "",
+                destino: "",
+                empresa: "",
+                cargo: "",
+                ingresos: "",
+            });
+
+            setCuota(null);
+            setResumen(null);
+        } catch (err) {
+            console.error("Error al guardar en Firebase:", err);
+
+            toast.error("❌ Error al enviar la solicitud", {
+                position: "top-right",
+            });
+        }
     };
 
     return (
@@ -153,12 +171,8 @@ export default function Solicitar() {
             <div className="form-container">
                 <h1 className="form-title">Solicitar Crédito</h1>
 
-                {success && (
-                    <p className="success-message">✔️ Solicitud enviada con éxito</p>
-                )}
-
-                {/*Formulario*/}
                 <form className="credit-form" onSubmit={handleSubmit}>
+
                     {/* DATOS PERSONALES */}
                     <section className="form-section">
                         <h2>Datos Personales</h2>
@@ -186,32 +200,32 @@ export default function Solicitar() {
 
                         <label>Tipo de Crédito</label>
                         <select id="tipo" value={form.tipo} onChange={handleChange}>
-                            <option value="">Seleccione un tipo</option>
-                            <option value="libre inversión">Crédito Libre Inversión</option>
-                            <option value="nómina">Crédito de Nómina</option>
-                            <option value="educativo">Crédito Educativo</option>
-                            <option value="vehicular">Crédito Vehicular</option>
-                            <option value="remodelación">Crédito para Remodelación</option>
-                            <option value="empresarial">Crédito Empresarial</option>
+                            <option value="">Seleccione</option>
+                            {credits.map((c) => (
+                                <option key={c.id} value={c.titulo.toLowerCase()}>
+                                    {c.titulo}
+                                </option>
+                            ))}
                         </select>
+
                         <p className="error">{errors.tipo}</p>
 
-                        <label>Monto Solicitado</label>
+                        <label>Monto</label>
                         <input id="monto" type="number" value={form.monto} onChange={handleChange} />
                         <p className="error">{errors.monto}</p>
 
-                        <label>Plazo</label>
+                        <label>Plazo (meses)</label>
                         <input id="plazo" type="number" value={form.plazo} onChange={handleChange} />
                         <p className="error">{errors.plazo}</p>
 
                         {cuota && (
                             <p className="cuota-estimada">
-                                💰 Cuota estimada: <strong>${cuota.toLocaleString()}</strong>
+                                💰 Cuota estimada: <b>${cuota.toLocaleString()}</b>
                             </p>
                         )}
 
                         <label>Destino</label>
-                        <textarea id="destino" value={form.destino} onChange={handleChange}></textarea>
+                        <textarea id="destino" value={form.destino} onChange={handleChange} />
                         <p className="error">{errors.destino}</p>
                     </section>
 
@@ -232,52 +246,34 @@ export default function Solicitar() {
                         <p className="error">{errors.ingresos}</p>
                     </section>
 
-                    {/* BOTÓN */}
                     <div className="form-buttons">
-                        <button type="submit" className="btn-enviar">Enviar Solicitud</button>
+                        <button className="btn-enviar">Enviar Solicitud</button>
                     </div>
                 </form>
             </div>
 
-            {/*MODAL RESUMEN */}
+            {/* MODAL */}
             {mostrarResumen && (
                 <div className="resumen-overlay">
                     <div className="resumen-modal">
-                        <h2>Resumen de la Solicitud</h2>
+                        <h2>Confirmar Solicitud</h2>
 
-                        <div className="resumen-item">
-                            <strong>Nombre:</strong> {form.nombre}
-                        </div>
-
-                        <div className="resumen-item">
-                            <strong>Cédula:</strong> {form.cedula}
-                        </div>
-
-                        <div className="resumen-item">
-                            <strong>Monto:</strong> ${Number(form.monto).toLocaleString()}
-                        </div>
-
-                        <div className="resumen-item">
-                            <strong>Plazo:</strong> {form.plazo} meses
-                        </div>
-
-                        <div className="resumen-item">
-                            <strong>Cuota estimada:</strong> ${cuota?.toLocaleString()}
-                        </div>
+                        <p><b>Nombre:</b> {form.nombre}</p>
+                        <p><b>Cédula:</b> {form.cedula}</p>
+                        <p><b>Monto:</b> ${Number(form.monto).toLocaleString()}</p>
+                        <p><b>Plazo:</b> {form.plazo} meses</p>
+                        <p><b>Cuota:</b> ${cuota?.toLocaleString()}</p>
 
                         <div className="resumen-buttons">
                             <button className="btn-confirmar" onClick={confirmarEnvio}>Confirmar</button>
-
-                            <button
-                                className="btn-cancelar"
-                                onClick={() => setMostrarResumen(false)}
-                            >
-                                Cancelar
-                            </button>
+                            <button className="btn-cancelar" onClick={() => setMostrarResumen(false)}>Cancelar</button>
                         </div>
                     </div>
                 </div>
             )}
+
+            {/* TOAST CONTAINER */}
+            <ToastContainer />
         </>
     );
 }
