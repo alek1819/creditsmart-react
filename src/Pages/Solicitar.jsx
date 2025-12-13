@@ -69,7 +69,7 @@ export default function Solicitar() {
                 const max = parseInt(maxStr) * 1000000;
 
                 if (valor < min || valor > max) {
-                    msg = Monto permitido: ${creditoSel.monto};
+                    msg = `Monto permitido: ${creditoSel.monto}`;
                 }
             }
         }
@@ -86,7 +86,7 @@ export default function Solicitar() {
                 );
 
                 if (valor > maxPlazo) {
-                    msg = Plazo máximo: ${maxPlazo} meses;
+                    msg = `Plazo máximo: ${maxPlazo} meses`;
                 }
             }
         }
@@ -154,10 +154,10 @@ export default function Solicitar() {
                 <h1 className="form-title">Solicitar Crédito</h1>
 
                 {success && (
-                    <p className="success-message">✔ Solicitud enviada con éxito</p>
+                    <p className="success-message">✔️ Solicitud enviada con éxito</p>
                 )}
 
-                {/Formulario/}
+                {/*Formulario*/}
                 <form className="credit-form" onSubmit={handleSubmit}>
                     {/* DATOS PERSONALES */}
                     <section className="form-section">
